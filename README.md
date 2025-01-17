@@ -1,1 +1,1 @@
-# Shopit
+# ShopIt
