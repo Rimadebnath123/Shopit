@@ -10,8 +10,8 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to='products/')
-    description = models.TextField()
+    image = models.ImageField(upload_to="img",blank=True)
+    description = models.TextField(blank=True,null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=50, choices=CATEGORY)
 
