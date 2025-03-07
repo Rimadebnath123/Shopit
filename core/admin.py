@@ -17,6 +17,10 @@ class CustomUserAdmin(UserAdmin):
                     'password2',
                     'city',
                     'state',
+                    'address',
+                    'phone',
+                    'is_staff',
+                    'is_active'
                 ),
             },
         ),
