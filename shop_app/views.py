@@ -14,7 +14,7 @@ import requests
 from .serializers import RegisterSerializer
 
 
-BASE_URL="http://localhost:5173"
+BASE_URL=settings.REACT_BASE_URL
 
 
 

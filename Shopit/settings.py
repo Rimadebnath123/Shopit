@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -132,7 +138,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL='media/'
 MEDIA_ROOT=BASE_DIR / "media"
-
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -157,3 +169,5 @@ FLUTTERWAVE_SECRET_KEY ="FLWSECK_TEST-982eaa6a94ccfcc3bba78d55835be268-X"
 PAYPAL_MODE = "sandbox"  # or "live" for production
 PAYPAL_CLIENT_ID = "AcsUANQKiNZmsmZYjlWx1xhF7iflXOvqw4JmOTh1GrH63--gDNaEO4Sedefiqb5dMJ4uB99v6A5D8Mga"
 PAYPAL_CLIENT_SECRET = "EChTilxwLN13Dv_a5TdmaYxcnvj2TyKxVi-fO6_8veYIGM2QPPdO-kB_4eirlS5FUVuEcrHAkwepMxia"
+
+REACT_BASE_URL=os.getenv("REACT_BASE_URL","http://localhost:5173")
