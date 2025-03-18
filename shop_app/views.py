@@ -11,6 +11,7 @@ import uuid
 import paypalrestsdk
 from django.conf import settings
 import requests
+from .serializers import RegisterSerializer
 
 
 BASE_URL="http://localhost:5173"
@@ -118,6 +119,18 @@ def user_info(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data)
+
+
+
+@api_view(["POST"])
+def register_user(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

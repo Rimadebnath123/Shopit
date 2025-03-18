@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import  CartItem, Product, Cart
 from django.contrib.auth import get_user_model
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -100,3 +101,22 @@ class UserSerializer(serializers.ModelSerializer):
         cartitems = CartItem.objects.filter(cart__user=user, cart__paid=True)[:10]
         serializer = NewCartItemSerializer(cartitems, many=True)
         return serializer.data
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    confirmPassword = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = get_user_model()  # Ensure this is correctly fetching your custom user model
+        fields = ["username", "first_name", "last_name", "email", "password", "confirmPassword"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def validate(self, data):
+        if data["password"] != data["confirmPassword"]:
+            raise serializers.ValidationError({"password": "Passwords do not match"})
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop("confirmPassword")
+        user = get_user_model().objects.create_user(**validated_data)  # Use get_user_model()
+        return user
