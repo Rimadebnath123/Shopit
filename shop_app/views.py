@@ -18,10 +18,12 @@ BASE_URL="http://localhost:5173"
 
 
 paypalrestsdk.configure({
-    "mode": settings.PAYPAL_MODE,
+    "mode": settings.PAYPAL_MODE,  # Ensure it's "sandbox"
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_CLIENT_SECRET,
+    "log_level": "DEBUG"
 })
+
 
 @api_view(['GET'])
 def Products(request):
@@ -238,27 +240,16 @@ def payment_callback(request):
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def paypal_payment(request):
+def initiate_paypal_payment(request):
     if request.method == "POST" and request.user.is_authenticated:
         tx_ref = str(uuid.uuid4())
         user = request.user
         cart_code = request.data.get("cart_code")
-
-        if not cart_code:
-            return Response({"error": "Cart code is missing"}, status=400)
-
-        try:
-            cart = Cart.objects.get(cart_code=cart_code)
-        except Cart.DoesNotExist:
-            return Response({"error": "Cart not found"}, status=404)
-
+        cart = Cart.objects.get(cart_code=cart_code)
         amount = sum([item.product.price * item.quantity for item in cart.items.all()])
         tax = Decimal("4.00")
         total_amount = amount + tax
-
-        # Use USD instead of INR
-        currency = "USD"
+       
 
         payment = paypalrestsdk.Payment({
             "intent": "sale",
@@ -273,17 +264,18 @@ def paypal_payment(request):
                         "name": "Cart Items",
                         "sku": "cart",
                         "price": str(total_amount),
-                        "currency": currency,  # Change to USD
+                        "currency": "USD",  # Change to USD
                         "quantity": 1
                     }]
                 },
-                "amount": {"total": str(total_amount), "currency": currency},  # Change to USD
+                "amount": {"total": str(total_amount), "currency":  "USD"},  # Change to USD
                 "description": "Payment for cart items."
             }]
         })
+        print("pay_id",payment)
 
         transaction, created = Transaction.objects.get_or_create(
-            ref=tx_ref, cart=cart, amount=total_amount, currency=currency, user=user, status="pending"
+            ref=tx_ref, cart=cart, amount=total_amount,user=user, status="pending"
         )
 
         if payment.create():
@@ -296,7 +288,7 @@ def paypal_payment(request):
 
     return Response({"error": "Invalid request"}, status=400)
 
-@api_view(['POST', 'GET'])
+@api_view(['POST'])
 def paypal_payment_callback(request):
     payment_id = request.query_params.get('paymentId')
     payer_id = request.query_params.get('PayerID')
@@ -304,19 +296,12 @@ def paypal_payment_callback(request):
 
     user = request.user
 
-    print("refff:", ref)
-
-    try:
-        transaction = Transaction.objects.get(ref=ref)
-    except Transaction.DoesNotExist:
-        return Response({"error": "Transaction not found."}, status=404)
+    print("refff", ref)
+   
+    transaction = Transaction.objects.get(ref=ref)
 
     if payment_id and payer_id:
-        # Fetch payment object using PayPal SDK
-        try:
-            payment = paypalrestsdk.Payment.find(payment_id)
-        except Exception as e:
-            return Response({"error": "Failed to retrieve payment details.", "details": str(e)}, status=400)
+        payment = paypalrestsdk.Payment.find(payment_id)
 
         # Update transaction status
         transaction.status = 'completed'

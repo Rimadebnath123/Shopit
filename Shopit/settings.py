@@ -153,9 +153,6 @@ FLUTTERWAVE_SECRET_KEY ="FLWSECK_TEST-982eaa6a94ccfcc3bba78d55835be268-X"
 
 # settings.py
 
-# PAYPAL_CLIENT_ID ="AcsUANQKiNZmsmZYjlWx1xhF7iflXOvqw4JmOTh1GrH63--gDNaEO4Sedefiqb5dMJ4uB99v6A5D8Mga"
-# PAYPAL_CLIENT_SECRET = "EChTilxwLN13Dv_a5TdmaYxcnvj2TyKxVi-fO6_8veYIGM2QPPdO-kB_4eirlS5FUVuEcrHAkwepMxia"
-# PAYPAL_MODE = "sandbox"  # or 'live' when you are ready for production
 
 PAYPAL_MODE = "sandbox"  # or "live" for production
 PAYPAL_CLIENT_ID = "AcsUANQKiNZmsmZYjlWx1xhF7iflXOvqw4JmOTh1GrH63--gDNaEO4Sedefiqb5dMJ4uB99v6A5D8Mga"
