@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-ft3ybccxsw$t2=_#v+fw5_9ewt#d4_n9by1e34h+_4@%p$du)u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["myshopapi-gt25.onrender.com","localhost","127.0.0.1"]
+ALLOWED_HOSTS = ["myshopapp-w484.onrender.com","localhost","127.0.0.1"]
 
 
 # Application definition
