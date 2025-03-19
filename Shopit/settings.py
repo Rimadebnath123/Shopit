@@ -67,6 +67,7 @@ CORS_ALLOWED_ORIGINS = [
 "http://localhost:5173",
 "http://localhost:5174",
 "http://localhost:5174",
+"https://myshopit-app-dv5l.onrender.com"
 ]
 
 ROOT_URLCONF = 'Shopit.urls'
